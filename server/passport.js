@@ -1,0 +1,43 @@
+const passport = require('passport')
+const LocalStrategy = require('passport-local').Strategy
+const JwtStrategy = require('passport-jwt').Strategy
+const User = require('./models/User')
+
+const cookieExtractor = (req) => {
+    let token = null
+    if(req && req.cookies){
+        token = req.cookies["access_token"]
+    }
+    return token
+}
+
+//authorization for any resources
+passport.use(new JwtStrategy({
+    jwtFromRequest: cookieExtractor,
+    secretOrKey: "CWBR2020"
+}, (payload, done) => {
+    User.findById({_id: payload.sub}, (err, user) => {
+        if(err)
+            return done(err)
+
+        if(user)
+            return done(null, user)
+        else
+            return done(null, false)
+    })
+}))
+
+// authentication for login using local strategy
+passport.use(new LocalStrategy((username, password, done) => {
+    User.findOne({username},(err,user)=>{
+        //potential database error
+        if(err)
+            return done(err)
+        //no user exists
+        if(!user)
+            return done(null,false)
+
+        //check that the password is correct    
+        user.comparePassword(password,done)
+    })
+}))
