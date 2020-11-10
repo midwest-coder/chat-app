@@ -25,12 +25,6 @@ const UserSchema = new mongoose.Schema({
         enum: ['user','admin'],
         required: true
     },
-    account: {
-        type: String,
-        required: true,
-        min: 12,
-        max: 24
-    },
     balance: {
         type: Number, 
         required: true
@@ -40,6 +34,9 @@ const UserSchema = new mongoose.Schema({
 })
 
 UserSchema.pre('save', function(next){
+    if(this.isModified('username'))
+        this.username = this.username.toLowerCase()
+    
     if(!this.isModified('password'))
         return next()
 
@@ -65,17 +62,19 @@ UserSchema.methods.comparePassword = function(password,callback){
     })
 }
 
-UserSchema.methods.addTokens = function(amount) {
-    this.balance += amount
-    return this.balance
-}
+// UserSchema.methods.addTokens = function(amount) {
+//     balance = this.balance
+//     this.balance = balance + amount
+//     return this.balance
+// }
 
-UserSchema.methods.subtractTokens = function(amount) {
-    if(this.balance < amount)
-    return false
-    else
-    this.balance -= amount
-    return true
-}
+// UserSchema.methods.removeTokens = function(amount) {
+//     if(this.balance < amount)
+//     return false
+//     else
+//     balance = this.balance
+//     this.balance = balance - amount
+//     return true
+// }
 
 module.exports = mongoose.model('User', UserSchema)

@@ -14,7 +14,7 @@ const cookieExtractor = (req) => {
 //authorization for any resources
 passport.use(new JwtStrategy({
     jwtFromRequest: cookieExtractor,
-    secretOrKey: "CWBR2020"
+    secretOrKey: "nh32899i32m908nvjkldmkjl8903f489fjnirefnvd90jdn3eyd8u9f0inrijofjrkcfid9j93"
 }, (payload, done) => {
     User.findById({_id: payload.sub}, (err, user) => {
         if(err)
