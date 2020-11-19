@@ -11,8 +11,8 @@ const Message = require('../models/Message')
 
 userRouter.post('/register',(req, res) => {
     const { username, password, email, role, balance} = req.body
-
-    User.findOne({username}, (err, user) => {
+    const lcUsername = username.toLowerCase()
+    User.findOne({username: lcUsername}, (err, user) => {
         if(err)
             res.status(500).json({message: {msgBody: "Error occured accessing database", msgError: true}})
 

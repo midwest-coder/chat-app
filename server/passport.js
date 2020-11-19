@@ -29,7 +29,8 @@ passport.use(new JwtStrategy({
 
 // authentication for login using local strategy
 passport.use(new LocalStrategy((username, password, done) => {
-    User.findOne({username},(err,user)=>{
+    const lcUsername = username.toLowerCase()
+    User.findOne({username: lcUsername},(err,user)=>{
         //potential database error
         if(err)
             return done(err)

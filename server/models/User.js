@@ -3,22 +3,24 @@ const bcrypt = require('bcrypt')
 
 const UserSchema = new mongoose.Schema({
     username: { 
-        type: String, 
+        type:  String, 
         required: true,
+        lowercase: true,
         min: 6,
         max: 20
-    },
-    password: {
-        type: String, 
-        required: true,
-        min: 6,
-        max: 30
     },
     email: {
         type: String, 
         required: true,
+        lowercase: true,
         min: 6,
-        max: 100
+        max: 50
+    },
+    password: {
+        type:  String, 
+        required: true,
+        min: 6,
+        max: 30
     },
     role: {
         type: String,
@@ -31,7 +33,11 @@ const UserSchema = new mongoose.Schema({
         //FINISH FILLING THIS OUT
     },
     chatrooms: [{type: mongoose.Schema.Types.ObjectId, ref: 'Chatroom'}]
-})
+}, { timestamps: true })
+
+// UserSchema.virtual('lowerCase').get(function() {
+//     return this.username.toLowerCase();
+//   });
 
 UserSchema.pre('save', function(next){
     if(this.isModified('username'))
@@ -61,20 +67,5 @@ UserSchema.methods.comparePassword = function(password,callback){
         }
     })
 }
-
-// UserSchema.methods.addTokens = function(amount) {
-//     balance = this.balance
-//     this.balance = balance + amount
-//     return this.balance
-// }
-
-// UserSchema.methods.removeTokens = function(amount) {
-//     if(this.balance < amount)
-//     return false
-//     else
-//     balance = this.balance
-//     this.balance = balance - amount
-//     return true
-// }
 
 module.exports = mongoose.model('User', UserSchema)
