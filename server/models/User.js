@@ -9,18 +9,18 @@ const UserSchema = new mongoose.Schema({
         min: 6,
         max: 20
     },
+    password: {
+        type:  String, 
+        required: true,
+        min: 6,
+        max: 30
+    },
     email: {
         type: String, 
         required: true,
         lowercase: true,
         min: 6,
         max: 50
-    },
-    password: {
-        type:  String, 
-        required: true,
-        min: 6,
-        max: 30
     },
     role: {
         type: String,
@@ -32,12 +32,8 @@ const UserSchema = new mongoose.Schema({
         required: true
         //FINISH FILLING THIS OUT
     },
-    chatrooms: [{type: mongoose.Schema.Types.ObjectId, ref: 'Chatroom'}]
+    matches: [{type: mongoose.Schema.Types.ObjectId, ref: 'Match'}]
 }, { timestamps: true })
-
-// UserSchema.virtual('lowerCase').get(function() {
-//     return this.username.toLowerCase();
-//   });
 
 UserSchema.pre('save', function(next){
     if(this.isModified('username'))

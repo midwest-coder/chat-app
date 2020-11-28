@@ -5,6 +5,7 @@ const passport = require('passport')
 const passportConfig = require('../passport')
 const JWT = require('jsonwebtoken')
 const User = require('../models/User')
+const Match = require('../models/Match')
 const Chatroom = require('../models/Chatroom')
 const Message = require('../models/Message')
 
@@ -32,10 +33,10 @@ userRouter.post('/register',(req, res) => {
 
 userRouter.post('/login', passport.authenticate('local', {session: false}), (req, res) => {
     if(req.isAuthenticated()){
-        const {_id, username, role, balance } = req.user
+        const {_id, username, role, balance, matches } = req.user
         const token = signToken(_id)
         res.cookie('access_token', token, {httpOnly: true, sameSite: true})
-        res.status(200).json({isAuthenticated: true, user: {username, role, balance}})
+        res.status(200).json({isAuthenticated: true, user: {username, role, balance, matches}})
     }
 })
 
@@ -55,9 +56,25 @@ userRouter.get('/checkUser/:username', (req, res) => {
         res.status(200).json({isTaken: true})
     })
 })
+
+userRouter.get('/getUsers', passport.authenticate('jwt', {session: false}), (req, res) => {
+        User.find({}, (err,users) => {
+            const userData = users.map(user => {
+                return (
+                    {username: user.username, role: user.role, balance: user.balance, matches: user.matches }
+                )
+            })
+            res.status(200).json({ users: userData })
+        })
+})
+userRouter.get('/getMatches', passport.authenticate('jwt', {session: false}), (req, res) => {
+        Match.find({}, (err,matches) => {
+            res.status(200).json({ matches: matches })
+        })
+})
 userRouter.get('/authenticated', passport.authenticate('jwt', {session: false}), (req, res) => {
-    const {username, role, balance } = req.user
-    res.status(200).json({isAuthenticated: true, user: {username, role, balance}})
+    const {username, role, balance, matches } = req.user
+    res.status(200).json({isAuthenticated: true, user: {username, role, balance, matches}})
 })
 
 userRouter.get('/logout', passport.authenticate('jwt', {session: false}), (req, res) => {
