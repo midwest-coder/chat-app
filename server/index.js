@@ -8,6 +8,8 @@ app.use(express.json())
 const port = (process.env.PORT || 4000)
 const http = require('http').createServer(app)
 const io = require('socket.io')(http)
+const mongoURL = 'mongodb+srv://grandmaster:<password>@cluster0.9qvgf.mongodb.net/<dbname>?retryWrites=true&w=majority';
+const test = 'mongodb://127.0.0.1/chatroom';
 
 const mongoose = require('mongoose')
 // const passport = require('passport')
@@ -19,7 +21,7 @@ const User = require('./models/User')
 const Chatroom = require('./models/Chatroom')
 const Message = require('./models/Message')
 
-mongoose.connect('mongodb://127.0.0.1/chatroom', {useNewUrlParser: true}, () => {
+mongoose.connect(mongoURL, {useNewUrlParser: true}, () => {
     console.log('successfully connected to database')  
 })
 //     io.use(socketioJwt.authorize({

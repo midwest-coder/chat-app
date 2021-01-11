@@ -15,7 +15,13 @@ const MatchSchema = new mongoose.Schema({
         type: Number,
         default: 0,
         required: true
-    }
+    },
+    usersKilled: [{type: mongoose.Schema.Types.ObjectId, ref: 'User'}],
+    diedTo: {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: 'User',
+        default: '0',
+        required: true}
 }, { timestamps: true })
 
 
